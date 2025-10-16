@@ -14,13 +14,114 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id String @id @default(uuid())
-  username String? @unique
-  avatarUrl String?
-  name String
+enum Role {
+  USER
+  ADMIN
+  OWNER
 }
 
-model Raffle {
+model User {
   id String @id @default(uuid())
+  role Role @default(USER)
+  telegramId Int @unique @map("telegram_id")
+  pocketOptionId Int? @unique @map("pocket_option_id")
+  firstName String @map("first_name")
+  lastName String? @map("last_name")
+  username String? @unique
+  photoUrl String? @map("photo_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  draws DrawParticipant[]
+  mentorships MentorshipParticipant[]
+  actions UserAction[]
+}
+
+model Draw {
+  id String @id @default(uuid())
+  title String
+  description String?
+  endAt DateTime? @map("end_at")
+  maxParticipants Int? @map("max_participants")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  participants DrawParticipant[]
+  requiresGroup Boolean @default(false) @map("requires_group")
+  requiresPocket Boolean @default(false) @map("requires_pocket")
+}
+
+model DrawParticipant {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  drawId    String   @map("draw_id")
+  joinedAt  DateTime @default(now()) @map("joined_at")
+  isWinner  Boolean  @default(false) @map("is_winner")
+  user User @relation(fields: [userId], references: [id])
+  draw Draw @relation(fields: [drawId], references: [id])
+  @@unique([userId, drawId])
+}
+
+enum Group {
+  VIP_GROUP
+  PUBLIC_GROUP
+}
+
+model Mentorship {
+  id String @id @default(uuid())
+  title String
+  description String?
+  startAt DateTime @default(now()) @map("start_at")
+  endAt DateTime? @map("end_at")
+  group Group @default(PUBLIC_GROUP)
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  participants MentorshipParticipant[]
+  userActions UserAction[]
+}
+
+model MentorshipParticipant {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  mentorshipId String @map("mentorship_id")
+  points Int @default(0)
+  isWinner Boolean @default(false) @map("is_winner")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+  mentorship Mentorship @relation(fields: [mentorshipId], references: [id])
+  @@unique([mentorshipId, userId])
+}
+
+enum ActionType {
+  MESSAGE
+  IMAGE
+  VIDEO
+  CUSTOM
+}
+
+enum ActionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model UserAction {
+  id String @id @default(uuid())
+  userId String @map("user_id")
+  mentorshipId String @map("mentorship_id")
+  actionType ActionType @map("action_type")
+  points Int @default(1)
+  status ActionStatus @default(PENDING)
+  description String?
+  statusUpdatedAt DateTime? @map("status_updated_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+  mentorship Mentorship @relation(fields: [mentorshipId], references: [id])
+  @@unique([userId, mentorshipId])
 }
