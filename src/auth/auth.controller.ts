@@ -10,6 +10,7 @@ export class AuthController {
   async telegramLogin(
     @Body(new ValidationPipe()) telegramUserDto: TelegramUserDto,
   ) {
+    console.log('telegramLogin');
     return this.authService.validateTelegramUser(telegramUserDto);
   }
 }
