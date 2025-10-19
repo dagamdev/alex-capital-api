@@ -19,8 +19,8 @@ export class TelegramUserDto {
   @IsUrl()
   photo_url?: string;
 
-  @IsString()
-  auth_date: string;
+  @IsInt()
+  auth_date: number;
 
   @IsString()
   hash: string;

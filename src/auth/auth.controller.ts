@@ -13,4 +13,11 @@ export class AuthController {
     console.log('telegramLogin');
     return this.authService.validateTelegramUser(telegramUserDto);
   }
+
+  @Post('ping')
+  ping() {
+    return {
+      message: 'pong',
+    };
+  }
 }
