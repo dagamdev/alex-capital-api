@@ -13,6 +13,7 @@ export class AppController {
 
   @Get('ping')
   ping() {
+    console.log(process.env.PORT);
     return {
       message: 'pong',
     };
