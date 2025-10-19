@@ -22,7 +22,7 @@ enum Role {
 model User {
   id String @id @default(uuid())
   role Role @default(USER)
-  telegramId Int @unique @map("telegram_id")
+  telegramId BigInt @unique @map("telegram_id")
   pocketOptionId Int? @unique @map("pocket_option_id")
   firstName String @map("first_name")
   lastName String? @map("last_name")
