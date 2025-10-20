@@ -4,7 +4,7 @@ import { User } from './users.decorator'
 import { PrismaService } from 'src/prisma/prisma.service'
 import type { SessionData } from 'src/types'
 
-@Controller('user')
+@Controller('users')
 export class UsersController {
   constructor(private readonly prismaService: PrismaService) {}
 
