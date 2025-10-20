@@ -31,7 +31,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Telegram user')
     }
 
-    const user = await this.prisma.user.upsert({
+    const { telegramId, ...user } = await this.prisma.user.upsert({
       where: { telegramId: BigInt(telegramUser.id) },
       update: {
         firstName: telegramUser.first_name,
@@ -49,7 +49,11 @@ export class AuthService {
     })
 
     return {
-      access_token: this.jwtService.sign({ sub: user.id }),
+      accessToken: this.jwtService.sign({ sub: user.id }),
+      user: {
+        telegramId: +telegramId.toString(),
+        ...user,
+      },
     }
   }
 }
