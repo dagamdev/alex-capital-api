@@ -1,6 +1,6 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { TelegramUserDto } from './dto/telegram-user.dto';
+import { Controller, Post, Body, ValidationPipe } from '@nestjs/common'
+import { AuthService } from './auth.service'
+import { TelegramUserDto } from './dto/telegram-user.dto'
 
 @Controller('auth')
 export class AuthController {
@@ -10,14 +10,6 @@ export class AuthController {
   async telegramLogin(
     @Body(new ValidationPipe()) telegramUserDto: TelegramUserDto,
   ) {
-    console.log('telegramLogin');
-    return this.authService.validateTelegramUser(telegramUserDto);
-  }
-
-  @Post('ping')
-  ping() {
-    return {
-      message: 'pong',
-    };
+    return this.authService.validateTelegramUser(telegramUserDto)
   }
 }
