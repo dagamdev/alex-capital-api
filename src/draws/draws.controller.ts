@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -31,7 +32,13 @@ export class DrawsController {
   @Get(':id')
   async getDrawById(@Param('id') id: string) {
     try {
-      return await this.drawsService.getDrawById(id)
+      const draw = await this.drawsService.getDrawById(id)
+
+      if (!draw) {
+        throw new NotFoundException(`Draw with id ${id} not found`)
+      }
+
+      return draw
     } catch (error) {
       console.error(error)
       throw error
