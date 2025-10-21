@@ -23,7 +23,7 @@ model User {
   id String @id @default(uuid())
   role Role @default(USER)
   telegramId BigInt @unique @map("telegram_id")
-  pocketOptionId Int? @unique @map("pocket_option_id")
+  pocketOptionId BigInt? @unique @map("pocket_option_id")
   firstName String @map("first_name")
   lastName String? @map("last_name")
   username String? @unique
@@ -36,17 +36,29 @@ model User {
   actions UserAction[]
 }
 
+enum Status {
+  active
+  closed
+  completed
+}
+
+enum Group {
+  VIP_GROUP
+  PUBLIC_GROUP
+}
+
 model Draw {
   id String @id @default(uuid())
   title String
   description String?
   endAt DateTime? @map("end_at")
+  status Status @default(active)
   maxParticipants Int? @map("max_participants")
+  participants DrawParticipant[]
+  requiresGroup Group? @map("requires_group")
+  requiresPocket Boolean @default(false) @map("requires_pocket")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  participants DrawParticipant[]
-  requiresGroup Boolean @default(false) @map("requires_group")
-  requiresPocket Boolean @default(false) @map("requires_pocket")
 }
 
 model DrawParticipant {
@@ -58,11 +70,6 @@ model DrawParticipant {
   user User @relation(fields: [userId], references: [id])
   draw Draw @relation(fields: [drawId], references: [id])
   @@unique([userId, drawId])
-}
-
-enum Group {
-  VIP_GROUP
-  PUBLIC_GROUP
 }
 
 model Mentorship {
