@@ -1,34 +1,44 @@
-import { Controller, Get, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { User } from './users.decorator'
-import { PrismaService } from 'src/prisma/prisma.service'
 import type { SessionData } from 'src/types'
+import { UsersService } from './users.service'
+import { UpdateUserDto } from './users.dto'
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@User() session: SessionData) {
     try {
-      const user = await this.prismaService.user.findUnique({
-        where: {
-          id: session.sub,
-        },
-        omit: {
-          createdAt: true,
-          updatedAt: true,
-        },
-      })
+      const user = await this.usersService.getUserById(session.sub)
 
-      if (!user) {
-        throw new Error('User not found')
-      }
+      return user
+    } catch (error: any) {
+      console.error(error)
+      throw error
+    }
+  }
 
-      const { telegramId, ...data } = user
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  async updateMe(
+    @User() session: SessionData,
+    @Body(new ValidationPipe()) data: UpdateUserDto,
+  ) {
+    try {
+      const updatedUser = await this.usersService.updateUser(session.sub, data)
 
-      return { ...data, telegramId: +telegramId.toString() }
+      return updatedUser
     } catch (error: any) {
       console.error(error)
       throw error
