@@ -5,18 +5,18 @@ import {
   Patch,
   UseGuards,
   ValidationPipe,
-} from '@nestjs/common';
+} from '@nestjs/common'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { User } from './users.decorator'
 import type { SessionData } from 'src/types'
 import { UsersService } from './users.service'
 import { UpdateUserDto } from './users.dto'
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@User() session: SessionData) {
     try {
@@ -29,7 +29,6 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch('me')
   async updateMe(
     @User() session: SessionData,

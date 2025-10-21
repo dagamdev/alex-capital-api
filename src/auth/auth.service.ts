@@ -4,6 +4,7 @@ import { TelegramUserDto } from './dto/telegram-user.dto'
 import * as crypto from 'crypto'
 import { BOT_TOKEN } from 'src/utils/constants'
 import { JwtService } from '@nestjs/jwt'
+import { formatBigInt } from 'src/utils'
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Telegram user')
     }
 
-    const { telegramId, ...user } = await this.prisma.user.upsert({
+    const user = await this.prisma.user.upsert({
       where: { telegramId: BigInt(telegramUser.id) },
       update: {
         firstName: telegramUser.first_name,
@@ -50,10 +51,7 @@ export class AuthService {
 
     return {
       accessToken: this.jwtService.sign({ sub: user.id }),
-      user: {
-        telegramId: +telegramId.toString(),
-        ...user,
-      },
+      user: formatBigInt(user),
     }
   }
 }

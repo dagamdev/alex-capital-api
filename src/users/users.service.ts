@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { UpdateUserDto } from './users.dto'
+import { formatBigInt } from 'src/utils'
 
 @Injectable()
 export class UsersService {
@@ -21,9 +22,7 @@ export class UsersService {
       throw new Error('User not found')
     }
 
-    const { telegramId, ...data } = user
-
-    return { ...data, telegramId: +telegramId.toString() }
+    return formatBigInt(user)
   }
 
   async updateUser(userId: string, data: UpdateUserDto) {
@@ -34,8 +33,6 @@ export class UsersService {
       data,
     })
 
-    const { telegramId, ...user } = updatedUser
-
-    return { ...user, telegramId: +telegramId.toString() }
+    return formatBigInt(updatedUser)
   }
 }
