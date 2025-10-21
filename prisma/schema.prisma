@@ -28,6 +28,8 @@ model User {
   lastName String? @map("last_name")
   username String? @unique
   photoUrl String? @map("photo_url")
+  numberOfWinners Int? @map("number_of_winners")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
