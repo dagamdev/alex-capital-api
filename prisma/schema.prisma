@@ -28,7 +28,6 @@ model User {
   lastName String? @map("last_name")
   username String? @unique
   photoUrl String? @map("photo_url")
-  numberOfWinners Int? @map("number_of_winners")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -56,9 +55,11 @@ model Draw {
   endAt DateTime? @map("end_at")
   status Status @default(active)
   maxParticipants Int? @map("max_participants")
+  numberOfWinners Int @default(1) @map("number_of_winners")
   participants DrawParticipant[]
   requiresGroup Group? @map("requires_group")
   requiresPocket Boolean @default(false) @map("requires_pocket")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
