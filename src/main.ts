@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.enableCors({
+    origin: 'https://lan-unmenacing-diddly.ngrok-free.dev',
     credentials: true,
   })
   app.use(cookieParser())
