@@ -7,7 +7,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://lan-unmenacing-diddly.ngrok-free.dev',
-      'https://alex-capital-web.vercel.app/',
+      'https://alex-capital-web.vercel.app',
     ],
     credentials: true,
   })
