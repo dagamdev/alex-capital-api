@@ -39,12 +39,18 @@ export class AuthController {
       maxAge: 1000 * 60 * 60 * 24,
     })
 
-    return { message: 'Login successful', data }
+    return { message: 'Login successful', ...data }
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getProfile(@Req() req: Request) {
     return req.user
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('token')
+    return { message: 'Logout successful' }
   }
 }
