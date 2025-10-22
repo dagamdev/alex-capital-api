@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsUrl, IsInt } from 'class-validator'
+import { IsString, IsOptional, IsUrl, IsInt, IsBoolean } from 'class-validator'
 
 export class TelegramUserDto {
   @IsInt()
@@ -24,4 +24,7 @@ export class TelegramUserDto {
 
   @IsString()
   hash: string
+
+  @IsBoolean()
+  devMode: boolean
 }

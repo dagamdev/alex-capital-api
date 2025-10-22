@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { TelegramUserDto } from './dto/telegram-user.dto'
 import * as crypto from 'crypto'
-import { BOT_TOKEN } from 'src/utils/constants'
+import { BOT_TOKEN, DEV_BOT_TOKEN } from 'src/utils/constants'
 import { JwtService } from '@nestjs/jwt'
 import { formatBigInt } from 'src/utils'
 
@@ -14,9 +14,11 @@ export class AuthService {
   ) {}
 
   async validateTelegramUser(telegramUser: TelegramUserDto) {
-    const secret = crypto.createHash('sha256').update(BOT_TOKEN).digest()
-
-    const { hash, ...userData } = telegramUser
+    const { hash, devMode, ...userData } = telegramUser
+    const secret = crypto
+      .createHash('sha256')
+      .update(devMode ? DEV_BOT_TOKEN : BOT_TOKEN)
+      .digest()
 
     const dataCheckString = Object.keys(userData)
       .sort()
