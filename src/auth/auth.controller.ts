@@ -33,10 +33,9 @@ export class AuthController {
 
     res.cookie('token', data.accessToken, {
       httpOnly: true,
-      // secure: true, // solo HTTPS
-      sameSite: 'lax',
-      secure: false,
-      maxAge: 1000 * 60 * 60 * 24,
+      sameSite: 'none',
+      secure: true,
+      maxAge: 1000 * 60 * 60,
     })
 
     return { message: 'Login successful', ...data }
