@@ -17,13 +17,6 @@ import { JwtAuthGuard } from './jwt-auth.guard'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // @Post('login')
-  // async telegramLogin(
-  //   @Body(new ValidationPipe()) telegramUserDto: TelegramUserDto,
-  // ) {
-  //   return this.authService.validateTelegramUser(telegramUserDto)
-  // }
-
   @Post('login')
   async login(
     @Body(new ValidationPipe()) telegramUserDto: TelegramUserDto,
@@ -49,7 +42,12 @@ export class AuthController {
 
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('token')
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      maxAge: 1000 * 60 * 60,
+    })
     return { message: 'Logout successful' }
   }
 }
